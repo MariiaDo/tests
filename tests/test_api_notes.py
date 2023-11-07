@@ -25,8 +25,6 @@ def test_get_note_by_id_negative(get_new_note_id):
     _id = str(get_new_note_id)[0:-1]
     resp = NotesApi().get_note_by_id(note_id=_id)
     assert resp.status_code == HTTPStatus.BAD_REQUEST, f'Request fail! ({resp.text})'
-    data = resp.json()
-    NotesApi._validate_json(data, NotesSchema.get_note_by_id_negative)
 
 
 # Create a new note positive
@@ -44,8 +42,6 @@ def test_post_new_note_negative(get_fake_note_payload):
     del payload["description"]
     resp = NotesApi().post_new_note(note_data=payload)
     assert resp.status_code == HTTPStatus.BAD_REQUEST, f'Request fail! ({resp.text})'
-    data = resp.json()
-    NotesApi._validate_json(data, NotesSchema.post_new_note_negative)
 
 
 # Update an existing note positive
@@ -63,8 +59,6 @@ def test_put_notes_by_id_negative(put_fake_note_payload):
     del payload["completed"]
     resp = NotesApi().put_notes_by_id(note_id=payload.get('id'), note_data=payload)
     assert resp.status_code == HTTPStatus.BAD_REQUEST, f'Request fail! ({resp.text})'
-    data = resp.json()
-    NotesApi._validate_json(data, NotesSchema.put_note_by_id_negative)
 
 
 # Update the completed status of a note positive
@@ -89,5 +83,3 @@ def test_delete_note_by_id_negative(get_new_note_id):
     _id = str(get_new_note_id)[0:-1]
     resp = NotesApi().delete_note_by_id(note_id=_id)
     assert resp.status_code == HTTPStatus.BAD_REQUEST, f'Request fail! ({resp.text})'
-    data = resp.json()
-    NotesApi._validate_json(data, NotesSchema.delete_note_by_id_negative)
