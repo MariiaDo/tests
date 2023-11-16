@@ -1,4 +1,8 @@
 {
   "url": "https://www.booking.com",
-  "browser_id": 2
+  "browser_id": 2,
+
+  "db_param": {
+    "path": "/db/test.db"
+  }
 }
