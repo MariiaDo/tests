@@ -1,16 +1,21 @@
 import json
 import random
-
 import allure
 import pytest
 from faker import Faker
+
 from api_collections.notes_api import NotesApi
 from constants import ROOT_PATH
 from db.sqlite_pack.goods_repo import GoodsRepo
-
 from utilities.driver_factory import DriverFactory
 from utilities.json_to_class import DictToClass
 
+
+def pytest_addoption(parser):
+    parser.addoption('--env', action='store', default='dev', help='Choose your env')
+    parser.addoption('--hub', action='store', default='False', help='Run test in container Selenoid')
+    parser.addoption('--headless', action='store', default='False', help='Run test in headless mode')
+    parser.addoption('--browser', action='store', default='2', help='Choose yor browser (1- chrome, 2 -firefox)')
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item):
@@ -24,7 +29,11 @@ def pytest_runtest_makereport(item):
 
 @pytest.fixture
 def create_driver(env, request):
-    driver = DriverFactory(env.browser_id).get_driver()
+    driver = DriverFactory(
+        browser_id=int(request.config.getoption('--browser')),
+        hub=eval(request.config.getoption('--hub')),
+        headless=eval(request.config.getoption('--headless'))
+    ).get_driver()
     driver.maximize_window()
     driver.get(env.url)
     yield driver
@@ -68,12 +77,14 @@ def put_fake_note_payload(fake, get_new_note_id):
         "category": random.choice(['Home', 'Work', 'Personal'])
     }
 
+
 @pytest.fixture()
 def patch_fake_completed_payload(fake, get_new_note_id):
     return {
         "id": get_new_note_id,
         "completed": random.choice(['false', 'true'])
     }
+
 
 @pytest.fixture()
 def get_new_note_id(get_fake_note_payload):
@@ -90,7 +101,6 @@ def fake():
 @pytest.fixture(scope='module')
 def good_repo(env):
     return GoodsRepo(f'{ROOT_PATH}{env.db_param["path"]}')
-
 
 
 @pytest.fixture()

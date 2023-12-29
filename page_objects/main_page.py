@@ -1,8 +1,10 @@
 from selenium.webdriver.common.by import By
 from page_objects._base_page import BasePage
 from page_objects.placement_page import PlacementPage
+from utilities.deco import auto_step
 
 
+@auto_step
 class MainPage():
     def __init__(self, driver):
         self._page = BasePage(driver)
@@ -15,7 +17,7 @@ class MainPage():
     __loc_filter_score_input = (By.XPATH, '(//div[@data-filters-item="review_score:review_score=90"])[1]')
     __loc_filter_mealplan = (By.XPATH, '(//div[@data-filters-item="mealplan:mealplan=1"])[1]')
     __loc_label_mealplan = (By.XPATH, '//span[contains(text(),"Breakfast included")]')
-
+    __loc_banner_enter = (By.XPATH, '//*[@role="dialog"]')
     def is_label_displayed(self):
         return self._page.is_displayed(self.__loc_label)
 
@@ -47,3 +49,7 @@ class MainPage():
         self._page.scroll_into_view(self.__loc_item_title)
         self._page.click_enter(self.__loc_item_title)
         return PlacementPage(self._page.driver)
+
+
+
+

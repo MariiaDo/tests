@@ -5,11 +5,15 @@ from selenium.webdriver.common.by import By
 from page_objects._base_page import BasePage
 from page_objects.main_page import MainPage
 from page_objects.start_page import StartPage
+from utilities.deco import auto_step
 
 
+@auto_step
 class HeaderPage():
     def __init__(self, driver):
         self._page = BasePage(driver)
+
+    __loc_banner = (By.ID, 'onetrust-accept-btn-handler')
 
     __loc_main_logo = (By.XPATH, '//a[@data-testid="header-booking-logo"]')
     __loc_submit_button = (By.XPATH, '//button[@type="submit"]')
@@ -20,15 +24,15 @@ class HeaderPage():
     __loc_input_destination = (By.XPATH, '//input[@name="ss"]')
 
     __loc_calendar_date_start = (By.XPATH, '//button[@data-testid="date-display-field-start"]')
-    __loc_calendar_date_end = (By.XPATH, '//button[@data-testid="date-display-field-end"]')
-
-
-    __loc_calendar_date = (By.XPATH,'((//*[@aria-live="polite"])[2]/..//td)[7]' )
-    __loc_calendar_date_next = (By.XPATH, '((//*[@aria-live="polite"])[2]/..//td)[7]/../following-sibling::*/td[7]')
+    __loc_calendar_date = (
+    By.XPATH, '//*[@id="calendar-searchboxdatepicker"]/div/div[1]/div/div[2]/table/tbody/tr[2]/td[7]/span')
+    __loc_calendar_date_next = (
+    By.XPATH, '//*[@id="calendar-searchboxdatepicker"]/div/div[1]/div/div[2]/table/tbody/tr[3]/td[7]/span')
 
     __loc_type_alert = (By.XPATH, '//*[@id="b2searchresultsPage"]/div[4]/div/div/div/form/div[1]/div[1]/div/div[2]')
 
-    #'//*[@data-date="2023-10-31"]/ancestor::td'
+    def click_banner(self):
+        self._page.click(self.__loc_banner)
 
     def click_main_logo(self):
         self._page.click(self.__loc_main_logo)
@@ -46,15 +50,12 @@ class HeaderPage():
         self._page.send_keys(self.__loc_input_destination, value)
 
     def set_calendar_date(self):
-        time.sleep(3)
-        self._page.click_enter(self.__loc_calendar_date_start)
-        self._page.click(self.__loc_calendar_date)
-        self._page.click(self.__loc_calendar_date_next)
-
+        self._page.click_by_js(self.__loc_calendar_date_start)
+        self._page.click_by_js(self.__loc_calendar_date)
+        self._page.click_by_js(self.__loc_calendar_date_next)
 
     def click_submit_button(self):
-        time.sleep(2)
-        self._page.click(self.__loc_submit_button)
+        self._page.click_by_js(self.__loc_submit_button)
         return MainPage(self._page.driver)
 
     def type_alert_is_displayed(self):
@@ -74,4 +75,3 @@ class HeaderPage():
         self._page.scroll_into_view((_by, _loc))
         currency = self._page.get_text(self.__loc_currency_choice)
         return currency
-
