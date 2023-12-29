@@ -1,7 +1,9 @@
 from selenium.webdriver.common.by import By
 from page_objects._base_page import BasePage
+from utilities.deco import auto_step
 
 
+@auto_step
 class PlacementPage():
     def __init__(self, driver):
         self._page = BasePage(driver)
@@ -13,7 +15,6 @@ class PlacementPage():
     def click_button_order(self):
         self._page.scroll_into_view(self.__loc_button_order)
         self._page.click_enter(self.__loc_button_order)
-
 
     def is_button_order_displayed(self):
         return self._page.is_displayed(self.__loc_button_order)

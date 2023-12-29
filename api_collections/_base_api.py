@@ -1,7 +1,6 @@
 import requests
 from jsonschema import validate
 
-
 class BaseApi:
     def __init__(self, base_url):
         self.__base_url = base_url
